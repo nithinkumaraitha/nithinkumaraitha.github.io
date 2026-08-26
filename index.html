@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nithin Kumar Aitha — Robotics Perception &amp; SLAM</title>
+<meta name="description" content="M.S. Robotics candidate building ROS 2 perception, SLAM, and sensor fusion systems in C++ and Python.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFF1EE;        /* free space */
+  --unknown:#CDD3CF;      /* unobserved cells */
+  --ink:#10161A;          /* occupied cells, primary text */
+  --ink-2:#5A6462;        /* secondary text */
+  --rule:#C3C9C5;
+  --accent:#0B4FCE;       /* trajectory */
+  --max:1080px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Archivo',system-ui,sans-serif; font-size:16.5px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 28px}
+
+/* ---------- hero ---------- */
+.hero{position:relative; height:min(88vh,760px); min-height:480px; overflow:hidden;
+      border-bottom:1px solid var(--ink)}
+#grid{position:absolute; inset:0; width:100%; height:100%; display:block}
+.hero-veil{position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(239,241,238,.97) 0%, rgba(239,241,238,.80) 34%, rgba(239,241,238,0) 68%)}
+.hero-inner{position:absolute; inset:0; display:flex; flex-direction:column;
+  justify-content:flex-end; padding-bottom:34px}
+.eyebrow{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-2)}
+h1{
+  font-weight:900; letter-spacing:-.035em; line-height:.92; margin:.28em 0 .18em;
+  font-size:clamp(2.7rem,8.6vw,6.1rem); text-transform:uppercase;
+}
+.tagline{font-size:clamp(1rem,2.1vw,1.22rem); font-weight:500; max-width:44ch; color:var(--ink)}
+.hero-links{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px}
+.btn{
+  font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.09em; text-transform:uppercase;
+  text-decoration:none; padding:10px 15px; border:1px solid var(--ink); background:transparent;
+  transition:background .16s ease,color .16s ease;
+}
+.btn:hover,.btn:focus-visible{background:var(--ink); color:var(--paper)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn.primary:hover,.btn.primary:focus-visible{background:var(--ink); border-color:var(--ink)}
+
+/* live readout, top-right of hero */
+.readout{
+  position:absolute; top:24px; right:28px; text-align:right;
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em;
+  color:var(--ink-2); text-transform:uppercase; line-height:1.85;
+}
+.readout b{font-weight:600; color:var(--ink)}
+.readout .dot{display:inline-block; width:6px; height:6px; background:var(--accent);
+  border-radius:50%; margin-right:6px; vertical-align:middle}
+
+/* ---------- sections ---------- */
+section{padding:76px 0 8px}
+.sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:34px}
+.sec-head h2{font-size:1.02rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase; margin:0}
+.sec-head .count{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-2)}
+.sec-head .line{flex:1; height:1px; background:var(--rule)}
+
+/* project entries — framed as recorded runs */
+.run{padding:30px 0; border-top:1px solid var(--rule)}
+.run:last-of-type{border-bottom:1px solid var(--rule)}
+.run-id{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em;
+  color:var(--accent); text-transform:uppercase; margin-bottom:8px}
+.run h3{font-size:clamp(1.3rem,3vw,1.72rem); font-weight:800; letter-spacing:-.02em; margin:0 0 10px}
+.run p{margin:0 0 18px; max-width:62ch; color:var(--ink)}
+.stack{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-2);
+  letter-spacing:.03em; margin-bottom:18px}
+
+/* metric strip, styled as instrument cells */
+.metrics{display:flex; flex-wrap:wrap; gap:1px; background:var(--rule); border:1px solid var(--rule);
+  width:fit-content; max-width:100%; margin-bottom:18px}
+.metric{background:var(--unknown); padding:11px 17px; min-width:112px}
+.metric .k{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink-2); display:block}
+.metric .v{font-weight:800; font-size:1.16rem; letter-spacing:-.02em; display:block; margin-top:2px}
+
+.run-links{display:flex; gap:18px; flex-wrap:wrap}
+.run-links a{font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.09em;
+  text-transform:uppercase; text-decoration:none; border-bottom:1px solid var(--accent);
+  padding-bottom:2px; color:var(--accent)}
+.run-links a:hover,.run-links a:focus-visible{color:var(--ink); border-color:var(--ink)}
+
+/* media slot — replace with your screenshots */
+.shot{margin:0 0 20px; border:1px solid var(--rule); background:var(--unknown)}
+.shot img{display:block; width:100%; height:auto}
+.shot figcaption{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-2);
+  padding:9px 12px; border-top:1px solid var(--rule); letter-spacing:.05em}
+
+/* skills */
+.skills{display:grid; grid-template-columns:repeat(auto-fit,minmax(258px,1fr)); gap:26px 40px}
+.skill-group h4{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--ink-2); margin:0 0 9px; font-weight:600}
+.skill-group p{margin:0; font-size:15px; line-height:1.62}
+
+/* education */
+.edu{border-top:1px solid var(--rule); padding:22px 0}
+.edu:last-of-type{border-bottom:1px solid var(--rule)}
+.edu h4{margin:0 0 3px; font-size:1.03rem; font-weight:700}
+.edu .meta{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-2)}
+
+/* contact */
+.contact{padding:76px 0 96px}
+.contact h2{font-size:clamp(1.7rem,5vw,3rem); font-weight:900; letter-spacing:-.03em;
+  text-transform:uppercase; margin:0 0 20px; line-height:1}
+.contact-links{display:flex; flex-wrap:wrap; gap:12px}
+footer{border-top:1px solid var(--ink); padding:20px 0 34px;
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-2); letter-spacing:.07em}
+
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+@media (max-width:640px){
+  .readout{display:none}
+  .wrap{padding:0 20px}
+  section{padding:56px 0 4px}
+  .metric{min-width:96px; padding:9px 13px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none !important; transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <canvas id="grid" aria-hidden="true"></canvas>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="readout" aria-hidden="true">
+    <div><span class="dot"></span>slam &middot; live</div>
+    <div>res <b>0.05 m/cell</b></div>
+    <div>mapped <b id="pct">0%</b></div>
+    <div>frame <b id="frm">0000</b></div>
+  </div>
+  <div class="hero-inner">
+    <div class="wrap">
+      <div class="eyebrow mono">Newark, Delaware &middot; M.S. Robotics, Dec 2026</div>
+      <h1>Nithin Kumar<br>Aitha</h1>
+      <p class="tagline">I build ROS 2 perception, SLAM, and sensor fusion systems &mdash; LiDAR, camera, IMU, and GNSS &mdash; in C++ and Python.</p>
+      <div class="hero-links">
+        <a class="btn primary" href="#work">View work</a>
+        <a class="btn" href="https://github.com/nithinkumaraitha">GitHub</a>
+        <a class="btn" href="https://linkedin.com/in/nithinkumar-aitha">LinkedIn</a>
+        <a class="btn" href="resume.pdf">Résumé</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head"><h2>Selected work</h2><span class="count mono">05 systems</span><span class="line"></span></div>
+
+    <article class="run">
+      <div class="run-id mono">Run 01 &mdash; mapping</div>
+      <h3>HD Map Generation &amp; LiDAR-Based SLAM</h3>
+      <p>A ROS 2 LiDAR SLAM pipeline that builds occupancy grid maps across indoor and outdoor environments, validates loop-closure consistency against recorded rosbag sequences, and converts raw point clouds into Lanelet2 HD maps for autonomous navigation.</p>
+      <div class="stack">ROS 2 Humble &middot; C++ &middot; Python &middot; PCL &middot; TF2 &middot; RViz2</div>
+
+      <figure class="shot">
+        <img src="https://raw.githubusercontent.com/nithinkumaraitha/lidar-slam-hd-mapping/main/media/outdoor_map.png" alt="Outdoor LiDAR SLAM mapping run" loading="lazy">
+        <figcaption>Outdoor mapping run &mdash; see repo for the indoor occupancy grid too</figcaption>
+      </figure>
+
+      <div class="metrics">
+        <div class="metric"><span class="k">Resolution</span><span class="v">0.05 m</span></div>
+        <div class="metric"><span class="k">Trajectory</span><span class="v">500 m</span></div>
+        <div class="metric"><span class="k">Bag runs</span><span class="v">15</span></div>
+      </div>
+      <div class="run-links"><a href="https://github.com/nithinkumaraitha/lidar-slam-hd-mapping">Repository &rarr;</a></div>
+    </article>
+
+    <article class="run">
+      <div class="run-id mono">Run 02 &mdash; sensor fusion</div>
+      <h3>Multi-Sensor 3D Object Localization (UDrive)</h3>
+      <p>A time-synchronized perception stack fusing camera, LiDAR, IMU, and GNSS. YOLOv8 detections are projected from 2D image space into 3D object positions, then transformed from the local frame into global GPS coordinates and checked against GNSS ground truth across repeated field runs.</p>
+      <div class="stack">ROS 2 &middot; YOLOv8 &middot; Python &middot; OpenCV &middot; GNSS/IMU</div>
+
+      <figure class="shot">
+        <img src="https://raw.githubusercontent.com/nithinkumaraitha/multisensor-3d-localization/main/media/demo.png" alt="YOLO detection and camera-LiDAR fusion output" loading="lazy">
+        <figcaption>Camera&ndash;LiDAR fusion with YOLO detection overlaid</figcaption>
+      </figure>
+
+      <div class="metrics">
+        <div class="metric"><span class="k">Global error</span><span class="v">&lt; 0.5 m</span></div>
+        <div class="metric"><span class="k">Stack rate</span><span class="v">10 Hz</span></div>
+        <div class="metric"><span class="k">Field runs</span><span class="v">12</span></div>
+      </div>
+      <div class="run-links"><a href="https://github.com/nithinkumaraitha/multisensor-3d-localization">Repository &rarr;</a></div>
+    </article>
+
+    <article class="run">
+      <div class="run-id mono">Run 03 &mdash; navigation</div>
+      <h3>Indoor Autonomous Delivery Robot</h3>
+      <p>An autonomous mobile robot running point-to-point deliveries through multi-room corridors. Nav2 costmaps, global and local planners, and recovery behaviors were tuned alongside slam_toolbox localization to hold pose tracking and handle dynamic obstacles.</p>
+      <div class="stack">ROS 2 Humble &middot; Nav2 &middot; slam_toolbox &middot; TF2</div>
+      <div class="metrics">
+        <div class="metric"><span class="k">Success rate</span><span class="v">90%</span></div>
+        <div class="metric"><span class="k">Trials</span><span class="v">30</span></div>
+      </div>
+
+    </article>
+
+    <article class="run">
+      <div class="run-id mono">Run 04 &mdash; vision</div>
+      <h3>DeepLeaf &mdash; Plant Disease Detection</h3>
+      <p>A benchmark of MobileNetV2 against ResNet50 on a 54,000-image, 38-class dataset, with targeted augmentation and hyperparameter tuning to hold accuracy under varied lighting conditions.</p>
+      <div class="stack">Python &middot; TensorFlow &middot; Keras</div>
+      <div class="metrics">
+        <div class="metric"><span class="k">Val accuracy</span><span class="v">96%</span></div>
+        <div class="metric"><span class="k">Train time</span><span class="v">&minus;40%</span></div>
+        <div class="metric"><span class="k">Classes</span><span class="v">38</span></div>
+      </div>
+
+    </article>
+
+    <article class="run">
+      <div class="run-id mono">Run 05 &mdash; manipulation</div>
+      <h3>Trajectory Planning for KUKA LBR iiwa 7 R800</h3>
+      <p>An inverse kinematics solver and quintic joint-space trajectory generator for a 7-DOF manipulator, verifying continuous position, velocity, and acceleration profiles inside joint limits.</p>
+      <div class="stack">MATLAB &middot; Robotics Toolbox</div>
+      <div class="metrics">
+        <div class="metric"><span class="k">DOF</span><span class="v">7</span></div>
+        <div class="metric"><span class="k">Profile</span><span class="v">Quintic</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head"><h2>Toolkit</h2><span class="line"></span></div>
+    <div class="skills">
+      <div class="skill-group"><h4>Languages</h4><p>C++, Python, MATLAB, Bash</p></div>
+      <div class="skill-group"><h4>Robotics &amp; middleware</h4><p>ROS 2 Humble, TF2, RViz2, Nav2, slam_toolbox, rosbag, URDF, CMake, colcon</p></div>
+      <div class="skill-group"><h4>Perception &amp; estimation</h4><p>SLAM, LiDAR point cloud processing, occupancy grid mapping, multi-sensor fusion, loop closure, pose and state estimation, sensor calibration, camera&ndash;LiDAR projection, OpenCV, PCL, Eigen</p></div>
+      <div class="skill-group"><h4>Machine learning</h4><p>YOLOv8, object detection, MobileNetV2, ResNet50, transfer learning, TensorFlow, Keras</p></div>
+      <div class="skill-group"><h4>Controls &amp; planning</h4><p>Path and motion planning, forward and inverse kinematics, Jacobians, trajectory generation, state-space modeling, PID</p></div>
+      <div class="skill-group"><h4>Platforms</h4><p>Linux (Ubuntu), Git, MATLAB/Simulink, ANSYS, SolidWorks</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="sec-head"><h2>Education</h2><span class="line"></span></div>
+    <div class="edu">
+      <h4>M.S. Robotics &mdash; University of Delaware</h4>
+      <div class="meta">Newark, DE &middot; Expected Dec 2026 &middot; Robot Dynamics, Autonomous Systems, Computer Vision, Machine Learning, Control Systems</div>
+    </div>
+    <div class="edu">
+      <h4>B.E. Mechanical Engineering &mdash; Osmania University</h4>
+      <div class="meta">Hyderabad, India &middot; Jun 2024</div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2>Open to perception<br>&amp; robotics roles</h2>
+    <p style="max-width:52ch;margin:0 0 24px">Graduating December 2026 and looking for perception, localization, SLAM, or robotics software engineering work. Happy to talk through any of the systems above.</p>
+    <div class="contact-links">
+      <a class="btn primary" href="mailto:nithinkumar.aitha@gmail.com">nithinkumar.aitha@gmail.com</a>
+      <a class="btn" href="tel:+13023327277">(302) 332-7277</a>
+      <a class="btn" href="https://github.com/nithinkumaraitha">GitHub</a>
+      <a class="btn" href="https://linkedin.com/in/nithinkumar-aitha">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer><div class="wrap">Nithin Kumar Aitha &middot; Newark, DE &middot; Built with an occupancy grid</div></footer>
+
+<script>
+(function(){
+  var canvas = document.getElementById('grid');
+  var ctx = canvas.getContext('2d');
+  var pctEl = document.getElementById('pct'), frmEl = document.getElementById('frm');
+
+  var COLS = 168, ROWS = 96;
+  var UNKNOWN = -1, FREE = 0, OCC = 1;
+
+  var C = { paper:[239,241,238], unknown:[205,211,207], ink:[16,22,26] };
+
+  // ground-truth floorplan the virtual robot is discovering
+  var truth = new Int8Array(COLS*ROWS);
+  function rect(x0,y0,x1,y1){
+    for(var y=y0;y<=y1;y++) for(var x=x0;x<=x1;x++)
+      if(x>=0&&x<COLS&&y>=0&&y<ROWS) truth[y*COLS+x]=1;
+  }
+  function room(x0,y0,x1,y1){ // hollow rectangle
+    rect(x0,y0,x1,y0+1); rect(x0,y1-1,x1,y1);
+    rect(x0,y0,x0+1,y1); rect(x1-1,y0,x1,y1);
+  }
+  room(4,4,163,91);
+  // interior partitions with doorways
+  rect(62,4,63,42);  rect(62,56,63,91);
+  rect(114,4,115,32); rect(114,48,115,91);
+  rect(4,50,34,51);  rect(46,50,62,51);
+  // furniture / obstacles
+  rect(20,16,30,24); rect(40,66,52,76); rect(78,14,90,22);
+  rect(76,66,96,74); rect(128,16,140,26); rect(132,60,148,70);
+
+  // robot trajectory through the doorways
+  var PATH = [[26,80],[26,32],[50,32],[50,44],[52,58],[80,58],[80,38],[100,38],
+              [124,38],[124,20],[150,20],[150,80],[124,80],[124,52]];
+
+  var known, traj, seg, t, frame, cellPx, offX, offY, done;
+  var gbuf = document.createElement('canvas');
+  gbuf.width = COLS; gbuf.height = ROWS;
+  var gctx = gbuf.getContext('2d');
+  var img = gctx.createImageData(COLS, ROWS);
+
+  function reset(){
+    known = new Int8Array(COLS*ROWS).fill(UNKNOWN);
+    traj = []; seg = 0; t = 0; frame = 0; done = false;
+  }
+
+  function paintBuffer(){
+    var d = img.data;
+    for(var i=0;i<COLS*ROWS;i++){
+      var s = known[i];
+      var c = s===UNKNOWN ? C.unknown : (s===OCC ? C.ink : C.paper);
+      d[i*4]=c[0]; d[i*4+1]=c[1]; d[i*4+2]=c[2]; d[i*4+3]=255;
+    }
+    gctx.putImageData(img,0,0);
+  }
+
+  // cast rays from the robot pose and update the map
+  function scan(rx, ry){
+    var RAYS = 200, RANGE = 34, STEP = 0.45;
+    for(var r=0;r<RAYS;r++){
+      var a = (r/RAYS)*Math.PI*2;
+      var dx = Math.cos(a)*STEP, dy = Math.sin(a)*STEP;
+      var x = rx, y = ry;
+      for(var s=0; s<RANGE/STEP; s++){
+        x += dx; y += dy;
+        var cx = x|0, cy = y|0;
+        if(cx<0||cx>=COLS||cy<0||cy>=ROWS) break;
+        var i = cy*COLS+cx;
+        if(truth[i]===1){ known[i]=OCC; break; }
+        if(known[i]===UNKNOWN) known[i]=FREE;
+      }
+    }
+  }
+
+  function resize(){
+    var r = canvas.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio||1, 2);
+    canvas.width = Math.max(1, Math.round(r.width*dpr));
+    canvas.height = Math.max(1, Math.round(r.height*dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    // cover-fit the grid to the canvas
+    cellPx = Math.max(r.width/COLS, r.height/ROWS);
+    offX = (r.width - COLS*cellPx)/2;
+    offY = (r.height - ROWS*cellPx)/2;
+  }
+
+  function draw(rx, ry){
+    var r = canvas.getBoundingClientRect();
+    ctx.clearRect(0,0,r.width,r.height);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(gbuf, offX, offY, COLS*cellPx, ROWS*cellPx);
+
+    // trajectory
+    if(traj.length>1){
+      ctx.beginPath();
+      ctx.moveTo(offX+traj[0][0]*cellPx, offY+traj[0][1]*cellPx);
+      for(var i=1;i<traj.length;i++)
+        ctx.lineTo(offX+traj[i][0]*cellPx, offY+traj[i][1]*cellPx);
+      ctx.strokeStyle = '#0B4FCE';
+      ctx.lineWidth = Math.max(1.6, cellPx*0.34);
+      ctx.lineJoin = ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+    // current pose
+    if(rx!=null && !done){
+      ctx.beginPath();
+      ctx.arc(offX+rx*cellPx, offY+ry*cellPx, Math.max(3.2, cellPx*0.85), 0, Math.PI*2);
+      ctx.fillStyle = '#0B4FCE'; ctx.fill();
+      ctx.strokeStyle = '#EFF1EE'; ctx.lineWidth = Math.max(1.2, cellPx*0.22); ctx.stroke();
+    }
+  }
+
+  function coverage(){
+    var n=0; for(var i=0;i<known.length;i++) if(known[i]!==UNKNOWN) n++;
+    return n/known.length;
+  }
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function step(){
+    if(seg < PATH.length-1){
+      var a = PATH[seg], b = PATH[seg+1];
+      var len = Math.hypot(b[0]-a[0], b[1]-a[1]);
+      t += 0.62/len;                       // constant ground speed
+      if(t>=1){ t=0; seg++; }
+      var rx = a[0]+(b[0]-a[0])*Math.min(t,1);
+      var ry = a[1]+(b[1]-a[1])*Math.min(t,1);
+      scan(rx, ry);
+      traj.push([rx,ry]);
+      paintBuffer();
+      draw(rx, ry);
+      frame++;
+      if(frmEl){
+        frmEl.textContent = String(frame).padStart(4,'0');
+        pctEl.textContent = Math.round(coverage()*100)+'%';
+      }
+      requestAnimationFrame(step);
+    } else {
+      done = true;
+      draw(null,null);
+      // pause on the finished map, then re-survey
+      setTimeout(function(){ reset(); requestAnimationFrame(step); }, 4200);
+    }
+  }
+
+  function renderStatic(){
+    // full map, no animation
+    for(var i=0;i<PATH.length-1;i++){
+      var a=PATH[i], b=PATH[i+1], len=Math.hypot(b[0]-a[0],b[1]-a[1]);
+      for(var s=0;s<=len;s+=0.8){
+        var rx=a[0]+(b[0]-a[0])*(s/len), ry=a[1]+(b[1]-a[1])*(s/len);
+        scan(rx,ry); traj.push([rx,ry]);
+      }
+    }
+    done = true; paintBuffer(); draw(null,null);
+    if(pctEl){ pctEl.textContent = Math.round(coverage()*100)+'%'; frmEl.textContent='—'; }
+  }
+
+  reset();
+  resize();
+  window.addEventListener('resize', function(){
+    resize();
+    paintBuffer();
+    draw(null,null);
+  });
+
+  if(reduced){ renderStatic(); } else { requestAnimationFrame(step); }
+})();
+</script>
+</body>
+</html>
