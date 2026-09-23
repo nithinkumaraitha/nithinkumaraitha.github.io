@@ -1,464 +1,1329 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-<meta property="og:title" content="Nithin Kumar Aitha — Robotics Perception & SLAM">
-<meta property="og:description" content="LiDAR SLAM, HD mapping, and multi-sensor perception systems built in ROS 2. Code, results, and technical writeups.">
-<meta property="og:image" content="https://nithinkumaraitha.github.io/og-image.png">
-<meta property="og:url" content="https://nithinkumaraitha.github.io">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nithin Kumar Aitha — Robotics Perception &amp; SLAM</title>
-<meta name="description" content="M.S. Robotics candidate building ROS 2 perception, SLAM, and sensor fusion systems in C++ and Python.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --paper:#EFF1EE;        /* free space */
-  --unknown:#CDD3CF;      /* unobserved cells */
-  --ink:#10161A;          /* occupied cells, primary text */
-  --ink-2:#5A6462;        /* secondary text */
-  --rule:#C3C9C5;
-  --accent:#0B4FCE;       /* trajectory */
-  --max:1080px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0; background:var(--paper); color:var(--ink);
-  font-family:'Archivo',system-ui,sans-serif; font-size:16.5px; line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-}
-a{color:inherit}
-.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
-.wrap{max-width:var(--max); margin:0 auto; padding:0 28px}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nithin Kumar Aitha - Robotics & Perception Portfolio</title>
 
-/* ---------- hero ---------- */
-.hero{position:relative; height:min(88vh,760px); min-height:480px; overflow:hidden;
-      border-bottom:1px solid var(--ink)}
-#grid{position:absolute; inset:0; width:100%; height:100%; display:block}
-.hero-veil{position:absolute; inset:0;
-  background:linear-gradient(to top, rgba(239,241,238,.97) 0%, rgba(239,241,238,.80) 34%, rgba(239,241,238,0) 68%)}
-.hero-inner{position:absolute; inset:0; display:flex; flex-direction:column;
-  justify-content:flex-end; padding-bottom:34px}
-.eyebrow{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-2)}
-h1{
-  font-weight:900; letter-spacing:-.035em; line-height:.92; margin:.28em 0 .18em;
-  font-size:clamp(2.7rem,8.6vw,6.1rem); text-transform:uppercase;
-}
-.tagline{font-size:clamp(1rem,2.1vw,1.22rem); font-weight:500; max-width:44ch; color:var(--ink)}
-.hero-links{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px}
-.btn{
-  font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.09em; text-transform:uppercase;
-  text-decoration:none; padding:10px 15px; border:1px solid var(--ink); background:transparent;
-  transition:background .16s ease,color .16s ease;
-}
-.btn:hover,.btn:focus-visible{background:var(--ink); color:var(--paper)}
-.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
-.btn.primary:hover,.btn.primary:focus-visible{background:var(--ink); border-color:var(--ink)}
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              stellar: {
+                bg: '#0B0F19',
+                card: 'rgba(23, 31, 51, 0.75)',
+                border: 'rgba(255, 255, 255, 0.12)',
+                accent: '#6366F1',
+                cyan: '#06B6D4',
+                pink: '#EC4899',
+                glow: '#8B5CF6',
+                lightBg: '#F8FAFC',
+                lightCard: '#FFFFFF'
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['Fira Code', 'monospace']
+            }
+          }
+        }
+      }
+    </script>
 
-/* live readout, top-right of hero */
-.readout{
-  position:absolute; top:24px; right:28px; text-align:right;
-  font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em;
-  color:var(--ink-2); text-transform:uppercase; line-height:1.85;
-}
-.readout b{font-weight:600; color:var(--ink)}
-.readout .dot{display:inline-block; width:6px; height:6px; background:var(--accent);
-  border-radius:50%; margin-right:6px; vertical-align:middle}
+    <!-- React & Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-/* ---------- sections ---------- */
-section{padding:76px 0 8px}
-.sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:34px}
-.sec-head h2{font-size:1.02rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase; margin:0}
-.sec-head .count{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-2)}
-.sec-head .line{flex:1; height:1px; background:var(--rule)}
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-/* project entries — framed as recorded runs */
-.run{padding:30px 0; border-top:1px solid var(--rule)}
-.run:last-of-type{border-bottom:1px solid var(--rule)}
-.run-id{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em;
-  color:var(--accent); text-transform:uppercase; margin-bottom:8px}
-.run h3{font-size:clamp(1.3rem,3vw,1.72rem); font-weight:800; letter-spacing:-.02em; margin:0 0 10px}
-.run p{margin:0 0 18px; max-width:62ch; color:var(--ink)}
-.stack{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-2);
-  letter-spacing:.03em; margin-bottom:18px}
+    <style>
+      /* Accessible High-Visibility Focus Outline */
+      :focus-visible {
+        outline: 3px solid #F59E0B !important;
+        outline-offset: 3px !important;
+        box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.3) !important;
+      }
 
-/* metric strip, styled as instrument cells */
-.metrics{display:flex; flex-wrap:wrap; gap:1px; background:var(--rule); border:1px solid var(--rule);
-  width:fit-content; max-width:100%; margin-bottom:18px}
-.metric{background:var(--unknown); padding:11px 17px; min-width:112px}
-.metric .k{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.13em;
-  text-transform:uppercase; color:var(--ink-2); display:block}
-.metric .v{font-weight:800; font-size:1.16rem; letter-spacing:-.02em; display:block; margin-top:2px}
+      /* Reduced motion media query override */
+      @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
 
-.run-links{display:flex; gap:18px; flex-wrap:wrap}
-.run-links a{font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.09em;
-  text-transform:uppercase; text-decoration:none; border-bottom:1px solid var(--accent);
-  padding-bottom:2px; color:var(--accent)}
-.run-links a:hover,.run-links a:focus-visible{color:var(--ink); border-color:var(--ink)}
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0B0F19;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #374151;
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #6366F1;
+      }
 
-/* media slot — replace with your screenshots */
-.shot{margin:0 0 20px; border:1px solid var(--rule); background:var(--unknown)}
-.shot img{display:block; width:100%; height:auto}
-.shot figcaption{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-2);
-  padding:9px 12px; border-top:1px solid var(--rule); letter-spacing:.05em}
+      /* Dyslexic Friendly Font Option */
+      .font-dyslexic {
+        font-family: 'Fira Code', monospace !important;
+        letter-spacing: 0.05em !important;
+        word-spacing: 0.1em !important;
+        line-height: 1.8 !important;
+      }
 
-/* skills */
-.skills{display:grid; grid-template-columns:repeat(auto-fit,minmax(258px,1fr)); gap:26px 40px}
-.skill-group h4{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.15em;
-  text-transform:uppercase; color:var(--ink-2); margin:0 0 9px; font-weight:600}
-.skill-group p{margin:0; font-size:15px; line-height:1.62}
+      /* High Contrast Dark Mode */
+      .theme-high-contrast-dark {
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+      }
+      .theme-high-contrast-dark .card-el {
+        background-color: #000000 !important;
+        border: 2px solid #FFFF00 !important;
+        color: #FFFFFF !important;
+      }
+      .theme-high-contrast-dark .accent-text {
+        color: #FFFF00 !important;
+        background: none !important;
+        -webkit-text-fill-color: initial !important;
+      }
+      .theme-high-contrast-dark .btn-primary {
+        background-color: #FFFF00 !important;
+        color: #000000 !important;
+        font-weight: 800 !important;
+        border: 2px solid #FFFFFF !important;
+      }
 
-/* education */
-.edu{border-top:1px solid var(--rule); padding:22px 0}
-.edu:last-of-type{border-bottom:1px solid var(--rule)}
-.edu h4{margin:0 0 3px; font-size:1.03rem; font-weight:700}
-.edu .meta{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-2)}
+      /* High Contrast Light Mode */
+      .theme-high-contrast-light {
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+      }
+      .theme-high-contrast-light .card-el {
+        background-color: #FFFFFF !important;
+        border: 2px solid #000000 !important;
+        color: #000000 !important;
+      }
+      .theme-high-contrast-light .accent-text {
+        color: #000022 !important;
+        background: none !important;
+        -webkit-text-fill-color: initial !important;
+        text-decoration: underline !important;
+      }
+      .theme-high-contrast-light .btn-primary {
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-weight: 800 !important;
+      }
 
-/* contact */
-.contact{padding:76px 0 96px}
-.contact h2{font-size:clamp(1.7rem,5vw,3rem); font-weight:900; letter-spacing:-.03em;
-  text-transform:uppercase; margin:0 0 20px; line-height:1}
-.contact-links{display:flex; flex-wrap:wrap; gap:12px}
-footer{border-top:1px solid var(--ink); padding:20px 0 34px;
-  font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-2); letter-spacing:.07em}
-
-:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
-@media (max-width:640px){
-  .readout{display:none}
-  .wrap{padding:0 20px}
-  section{padding:56px 0 4px}
-  .metric{min-width:96px; padding:9px 13px}
-}
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *{animation:none !important; transition:none !important}
-}
-</style>
+      .glass-panel {
+        background: rgba(23, 31, 51, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+    </style>
 </head>
-<body>
+<body class="bg-stellar-bg text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white transition-colors duration-200">
 
-<header class="hero">
-  <canvas id="grid" aria-hidden="true"></canvas>
-  <div class="hero-veil" aria-hidden="true"></div>
-  <div class="readout" aria-hidden="true">
-    <div><span class="dot"></span>slam &middot; live</div>
-    <div>res <b>0.05 m/cell</b></div>
-    <div>mapped <b id="pct">0%</b></div>
-    <div>frame <b id="frm">0000</b></div>
-  </div>
-  <div class="hero-inner">
-    <div class="wrap">
-      <div class="eyebrow mono">Newark, Delaware &middot; M.S. Robotics, Dec 2026</div>
-      <h1>Nithin Kumar<br>Aitha</h1>
-      <p class="tagline">I build ROS 2 perception, SLAM, and sensor fusion systems &mdash; LiDAR, camera, IMU, and GNSS &mdash; in C++ and Python.</p>
-      <div class="hero-links">
-        <a class="btn primary" href="#work">View work</a>
-        <a class="btn" href="https://github.com/nithinkumaraitha">GitHub</a>
-        <a class="btn" href="https://linkedin.com/in/nithinkumar-aitha">LinkedIn</a>
-        <a class="btn" href="resume.pdf">Résumé</a>
-      </div>
-    </div>
-  </div>
-</header>
+    <!-- Skip Link for Keyboard Accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-6 focus:py-3 focus:bg-amber-400 focus:text-slate-950 focus:font-bold focus:rounded-xl focus:shadow-2xl focus:ring-4 focus:ring-amber-300">
+      Skip to Main Content (Alt + 1)
+    </a>
 
-<main>
+    <!-- React App Root Container -->
+    <div id="root"></div>
 
-<section id="work">
-  <div class="wrap">
-    <div class="sec-head"><h2>Selected work</h2><span class="count mono">05 systems</span><span class="line"></span></div>
+    <!-- Live ARIA Announcer Region -->
+    <div id="aria-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-    <article class="run">
-      <div class="run-id mono">Run 01 &mdash; mapping</div>
-      <h3>HD Map Generation &amp; LiDAR-Based SLAM</h3>
-      <p>A ROS 2 LiDAR SLAM pipeline that builds occupancy grid maps across indoor and outdoor environments, validates loop-closure consistency against recorded rosbag sequences, and converts raw point clouds into Lanelet2 HD maps for autonomous navigation.</p>
-      <div class="stack">ROS 2 Humble &middot; C++ &middot; Python &middot; PCL &middot; TF2 &middot; RViz2</div>
+    <script type="text/babel">
+      const { useState, useEffect, useRef, useMemo } = React;
 
-      <figure class="shot">
-        <img src="https://raw.githubusercontent.com/nithinkumaraitha/lidar-slam-hd-mapping/main/media/outdoor_map.png" alt="Outdoor LiDAR SLAM mapping run" loading="lazy">
-        <figcaption>Outdoor mapping run &mdash; see repo for the indoor occupancy grid too</figcaption>
-      </figure>
+      // Screen Reader Dynamic Announcer
+      const announceToScreenReader = (message) => {
+        const announcer = document.getElementById('aria-announcer');
+        if (announcer) {
+          announcer.textContent = '';
+          setTimeout(() => {
+            announcer.textContent = message;
+          }, 50);
+        }
+      };
 
-      <div class="metrics">
-        <div class="metric"><span class="k">Resolution</span><span class="v">0.05 m</span></div>
-        <div class="metric"><span class="k">Trajectory</span><span class="v">500 m</span></div>
-        <div class="metric"><span class="k">Bag runs</span><span class="v">15</span></div>
-      </div>
-      <div class="run-links"><a href="https://github.com/nithinkumaraitha/lidar-slam-hd-mapping">Repository &rarr;</a></div>
-    </article>
+      // Interactive Particle Background (Simulating LiDAR Point-Clouds & Connections)
+      const StellarCanvas = ({ isPaused, isHighContrast }) => {
+        const canvasRef = useRef(null);
 
-    <article class="run">
-      <div class="run-id mono">Run 02 &mdash; sensor fusion</div>
-      <h3>Multi-Sensor 3D Object Localization (UDrive)</h3>
-      <p>A time-synchronized perception stack fusing camera, LiDAR, IMU, and GNSS. YOLOv8 detections are projected from 2D image space into 3D object positions, then transformed from the local frame into global GPS coordinates and checked against GNSS ground truth across repeated field runs.</p>
-      <div class="stack">ROS 2 &middot; YOLOv8 &middot; Python &middot; OpenCV &middot; GNSS/IMU</div>
+        useEffect(() => {
+          if (isPaused || isHighContrast) return;
 
-      <figure class="shot">
-        <img src="https://raw.githubusercontent.com/nithinkumaraitha/multisensor-3d-localization/main/media/demo.png" alt="YOLO detection and camera-LiDAR fusion output" loading="lazy">
-        <figcaption>Camera&ndash;LiDAR fusion with YOLO detection overlaid</figcaption>
-      </figure>
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          let animationFrameId;
 
-      <div class="metrics">
-        <div class="metric"><span class="k">Global error</span><span class="v">&lt; 0.5 m</span></div>
-        <div class="metric"><span class="k">Stack rate</span><span class="v">10 Hz</span></div>
-        <div class="metric"><span class="k">Field runs</span><span class="v">12</span></div>
-      </div>
-      <div class="run-links"><a href="https://github.com/nithinkumaraitha/multisensor-3d-localization">Repository &rarr;</a></div>
-    </article>
+          const handleResize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+          };
+          handleResize();
+          window.addEventListener('resize', handleResize);
 
-    <article class="run">
-      <div class="run-id mono">Run 03 &mdash; navigation</div>
-      <h3>Indoor Autonomous Delivery Robot</h3>
-      <p>An autonomous mobile robot running point-to-point deliveries through multi-room corridors. Nav2 costmaps, global and local planners, and recovery behaviors were tuned alongside slam_toolbox localization to hold pose tracking and handle dynamic obstacles.</p>
-      <div class="stack">ROS 2 Humble &middot; Nav2 &middot; slam_toolbox &middot; TF2</div>
-      <div class="metrics">
-        <div class="metric"><span class="k">Success rate</span><span class="v">90%</span></div>
-        <div class="metric"><span class="k">Trials</span><span class="v">30</span></div>
-      </div>
+          const numParticles = Math.min(Math.floor(window.innerWidth / 16), 65);
+          const particles = [];
 
-    </article>
+          for (let i = 0; i < numParticles; i++) {
+            particles.push({
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              radius: Math.random() * 2 + 0.8,
+              vx: (Math.random() - 0.5) * 0.4,
+              vy: (Math.random() - 0.5) * 0.4,
+              alpha: Math.random() * 0.6 + 0.3,
+              color: Math.random() > 0.5 ? '#6366F1' : Math.random() > 0.5 ? '#06B6D4' : '#10B981'
+            });
+          }
 
-    <article class="run">
-      <div class="run-id mono">Run 04 &mdash; vision</div>
-      <h3>DeepLeaf &mdash; Plant Disease Detection</h3>
-      <p>A benchmark of MobileNetV2 against ResNet50 on a 54,000-image, 38-class dataset, with targeted augmentation and hyperparameter tuning to hold accuracy under varied lighting conditions.</p>
-      <div class="stack">Python &middot; TensorFlow &middot; Keras</div>
-      <div class="metrics">
-        <div class="metric"><span class="k">Val accuracy</span><span class="v">96%</span></div>
-        <div class="metric"><span class="k">Train time</span><span class="v">&minus;40%</span></div>
-        <div class="metric"><span class="k">Classes</span><span class="v">38</span></div>
-      </div>
+          const render = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    </article>
+            for (let i = 0; i < particles.length; i++) {
+              const p = particles[i];
+              p.x += p.vx;
+              p.y += p.vy;
 
-    <article class="run">
-      <div class="run-id mono">Run 05 &mdash; manipulation</div>
-      <h3>Trajectory Planning for KUKA LBR iiwa 7 R800</h3>
-      <p>An inverse kinematics solver and quintic joint-space trajectory generator for a 7-DOF manipulator, verifying continuous position, velocity, and acceleration profiles inside joint limits.</p>
-      <div class="stack">MATLAB &middot; Robotics Toolbox</div>
-      <div class="metrics">
-        <div class="metric"><span class="k">DOF</span><span class="v">7</span></div>
-        <div class="metric"><span class="k">Profile</span><span class="v">Quintic</span></div>
-      </div>
-    </article>
-  </div>
-</section>
+              if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+              if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
-<section id="skills">
-  <div class="wrap">
-    <div class="sec-head"><h2>Toolkit</h2><span class="line"></span></div>
-    <div class="skills">
-      <div class="skill-group"><h4>Languages</h4><p>C++, Python, MATLAB, Bash</p></div>
-      <div class="skill-group"><h4>Robotics &amp; middleware</h4><p>ROS 2 Humble, TF2, RViz2, Nav2, slam_toolbox, rosbag, URDF, CMake, colcon</p></div>
-      <div class="skill-group"><h4>Perception &amp; estimation</h4><p>SLAM, LiDAR point cloud processing, occupancy grid mapping, multi-sensor fusion, loop closure, pose and state estimation, sensor calibration, camera&ndash;LiDAR projection, OpenCV, PCL, Eigen</p></div>
-      <div class="skill-group"><h4>Machine learning</h4><p>YOLOv8, object detection, MobileNetV2, ResNet50, transfer learning, TensorFlow, Keras</p></div>
-      <div class="skill-group"><h4>Controls &amp; planning</h4><p>Path and motion planning, forward and inverse kinematics, Jacobians, trajectory generation, state-space modeling, PID</p></div>
-      <div class="skill-group"><h4>Platforms</h4><p>Linux (Ubuntu), Git, MATLAB/Simulink, ANSYS, SolidWorks</p></div>
-    </div>
-  </div>
-</section>
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+              ctx.fillStyle = p.color;
+              ctx.globalAlpha = p.alpha;
+              ctx.fill();
 
-<section id="education">
-  <div class="wrap">
-    <div class="sec-head"><h2>Education</h2><span class="line"></span></div>
-    <div class="edu">
-      <h4>M.S. Robotics &mdash; University of Delaware</h4>
-      <div class="meta">Newark, DE &middot; Expected Dec 2026 &middot; Robot Dynamics, Autonomous Systems, Computer Vision, Machine Learning, Control Systems</div>
-    </div>
-    <div class="edu">
-      <h4>B.E. Mechanical Engineering &mdash; Osmania University</h4>
-      <div class="meta">Hyderabad, India &middot; Jun 2024</div>
-    </div>
-  </div>
-</section>
+              // Synthetic Point-Cloud Ray Trajectories
+              for (let j = i + 1; j < particles.length; j++) {
+                const p2 = particles[j];
+                const dx = p.x - p2.x;
+                const dy = p.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
 
-<section class="contact" id="contact">
-  <div class="wrap">
-    <h2>Open to perception<br>&amp; robotics roles</h2>
-    <p style="max-width:52ch;margin:0 0 24px">Graduating December 2026 and looking for perception, localization, SLAM, or robotics software engineering work. Happy to talk through any of the systems above.</p>
-    <div class="contact-links">
-      <a class="btn primary" href="mailto:nithinkumar.aitha@gmail.com">nithinkumar.aitha@gmail.com</a>
-      <a class="btn" href="tel:+13023327277">(302) 332-7277</a>
-      <a class="btn" href="https://github.com/nithinkumaraitha">GitHub</a>
-      <a class="btn" href="https://linkedin.com/in/nithinkumar-aitha">LinkedIn</a>
-    </div>
-  </div>
-</section>
+                if (dist < 110) {
+                  ctx.beginPath();
+                  ctx.moveTo(p.x, p.y);
+                  ctx.lineTo(p2.x, p2.y);
+                  ctx.strokeStyle = '#6366F1';
+                  ctx.globalAlpha = (1 - dist / 110) * 0.15;
+                  ctx.lineWidth = 0.8;
+                  ctx.stroke();
+                }
+              }
+            }
 
-</main>
+            animationFrameId = requestAnimationFrame(render);
+          };
 
-<footer><div class="wrap">Nithin Kumar Aitha &middot; Newark, DE &middot; Built with an occupancy grid</div></footer>
+          render();
 
-<script>
-(function(){
-  var canvas = document.getElementById('grid');
-  var ctx = canvas.getContext('2d');
-  var pctEl = document.getElementById('pct'), frmEl = document.getElementById('frm');
+          return () => {
+            window.removeEventListener('resize', handleResize);
+            cancelAnimationFrame(animationFrameId);
+          };
+        }, [isPaused, isHighContrast]);
 
-  var COLS = 168, ROWS = 96;
-  var UNKNOWN = -1, FREE = 0, OCC = 1;
+        if (isHighContrast) return null;
 
-  var C = { paper:[239,241,238], unknown:[205,211,207], ink:[16,22,26] };
+        return (
+          <canvas
+            ref={canvasRef}
+            className="fixed inset-0 pointer-events-none z-0"
+            aria-hidden="true"
+          />
+        );
+      };
 
-  // ground-truth floorplan the virtual robot is discovering
-  var truth = new Int8Array(COLS*ROWS);
-  function rect(x0,y0,x1,y1){
-    for(var y=y0;y<=y1;y++) for(var x=x0;x<=x1;x++)
-      if(x>=0&&x<COLS&&y>=0&&y<ROWS) truth[y*COLS+x]=1;
-  }
-  function room(x0,y0,x1,y1){ // hollow rectangle
-    rect(x0,y0,x1,y0+1); rect(x0,y1-1,x1,y1);
-    rect(x0,y0,x0+1,y1); rect(x1-1,y0,x1,y1);
-  }
-  room(4,4,163,91);
-  // interior partitions with doorways
-  rect(62,4,63,42);  rect(62,56,63,91);
-  rect(114,4,115,32); rect(114,48,115,91);
-  rect(4,50,34,51);  rect(46,50,62,51);
-  // furniture / obstacles
-  rect(20,16,30,24); rect(40,66,52,76); rect(78,14,90,22);
-  rect(76,66,96,74); rect(128,16,140,26); rect(132,60,148,70);
+      // Accessibility Controls Component
+      const AccessibilityControlPanel = ({
+        theme,
+        setTheme,
+        fontSize,
+        setFontSize,
+        fontType,
+        setFontType,
+        reducedMotion,
+        setReducedMotion,
+        isOpen,
+        setIsOpen
+      }) => {
+        return (
+          <div className="fixed bottom-6 right-6 z-50">
+            <button
+              onClick={() => {
+                const nextState = !isOpen;
+                setIsOpen(nextState);
+                announceToScreenReader(nextState ? "Accessibility settings menu opened." : "Accessibility menu closed.");
+              }}
+              className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold px-4 py-3 rounded-full shadow-2xl transition-all transform hover:scale-105 active:scale-95 border-2 border-amber-300"
+              aria-expanded={isOpen}
+              aria-controls="accessibility-panel"
+              aria-label="Accessibility & Display Preferences"
+            >
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
+              </svg>
+              <span className="hidden sm:inline font-bold text-sm tracking-wide">Accessibility</span>
+            </button>
 
-  // robot trajectory through the doorways
-  var PATH = [[26,80],[26,32],[50,32],[50,44],[52,58],[80,58],[80,38],[100,38],
-              [124,38],[124,20],[150,20],[150,80],[124,80],[124,52]];
+            {isOpen && (
+              <div
+                id="accessibility-panel"
+                className="absolute bottom-16 right-0 w-80 sm:w-96 bg-slate-900 border-2 border-amber-400/80 text-slate-100 rounded-2xl p-6 shadow-2xl backdrop-blur-xl z-50 card-el"
+                role="dialog"
+                aria-label="Accessibility Control Center"
+              >
+                <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-700">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <h2 className="text-lg font-bold text-amber-400">Display Controls</h2>
+                  </div>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white"
+                    aria-label="Close Settings"
+                  >
+                    ✕
+                  </button>
+                </div>
 
-  var known, traj, seg, t, frame, cellPx, offX, offY, done;
-  var gbuf = document.createElement('canvas');
-  gbuf.width = COLS; gbuf.height = ROWS;
-  var gctx = gbuf.getContext('2d');
-  var img = gctx.createImageData(COLS, ROWS);
+                <div className="space-y-5 text-sm">
+                  {/* Contrast Mode */}
+                  <div>
+                    <label className="block font-semibold mb-2 text-slate-300">
+                      Visual Contrast Mode:
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => {
+                          setTheme('stellar');
+                          announceToScreenReader('Switched to Dark Cosmic theme');
+                        }}
+                        className={`p-2.5 rounded-lg text-xs font-semibold border text-left transition-all ${
+                          theme === 'stellar'
+                            ? 'bg-indigo-600 text-white border-indigo-400 ring-2 ring-indigo-400'
+                            : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                        }`}
+                      >
+                        🤖 Dark Cosmic
+                      </button>
 
-  function reset(){
-    known = new Int8Array(COLS*ROWS).fill(UNKNOWN);
-    traj = []; seg = 0; t = 0; frame = 0; done = false;
-  }
+                      <button
+                        onClick={() => {
+                          setTheme('light');
+                          announceToScreenReader('Switched to Light mode');
+                        }}
+                        className={`p-2.5 rounded-lg text-xs font-semibold border text-left transition-all ${
+                          theme === 'light'
+                            ? 'bg-slate-200 text-slate-900 border-slate-400 ring-2 ring-slate-400'
+                            : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                        }`}
+                      >
+                        ☀️ Soft Light
+                      </button>
 
-  function paintBuffer(){
-    var d = img.data;
-    for(var i=0;i<COLS*ROWS;i++){
-      var s = known[i];
-      var c = s===UNKNOWN ? C.unknown : (s===OCC ? C.ink : C.paper);
-      d[i*4]=c[0]; d[i*4+1]=c[1]; d[i*4+2]=c[2]; d[i*4+3]=255;
-    }
-    gctx.putImageData(img,0,0);
-  }
+                      <button
+                        onClick={() => {
+                          setTheme('hc-dark');
+                          announceToScreenReader('Switched to High Contrast Dark theme');
+                        }}
+                        className={`p-2.5 rounded-lg text-xs font-semibold border text-left transition-all ${
+                          theme === 'hc-dark'
+                            ? 'bg-black text-yellow-300 border-yellow-300 ring-2 ring-yellow-300'
+                            : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                        }`}
+                      >
+                        ⚡ High Contrast Dark
+                      </button>
 
-  // cast rays from the robot pose and update the map
-  function scan(rx, ry){
-    var RAYS = 200, RANGE = 34, STEP = 0.45;
-    for(var r=0;r<RAYS;r++){
-      var a = (r/RAYS)*Math.PI*2;
-      var dx = Math.cos(a)*STEP, dy = Math.sin(a)*STEP;
-      var x = rx, y = ry;
-      for(var s=0; s<RANGE/STEP; s++){
-        x += dx; y += dy;
-        var cx = x|0, cy = y|0;
-        if(cx<0||cx>=COLS||cy<0||cy>=ROWS) break;
-        var i = cy*COLS+cx;
-        if(truth[i]===1){ known[i]=OCC; break; }
-        if(known[i]===UNKNOWN) known[i]=FREE;
-      }
-    }
-  }
+                      <button
+                        onClick={() => {
+                          setTheme('hc-light');
+                          announceToScreenReader('Switched to High Contrast Light theme');
+                        }}
+                        className={`p-2.5 rounded-lg text-xs font-semibold border text-left transition-all ${
+                          theme === 'hc-light'
+                            ? 'bg-white text-black border-black ring-2 ring-black font-bold'
+                            : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                        }`}
+                      >
+                        📄 High Contrast Light
+                      </button>
+                    </div>
+                  </div>
 
-  function resize(){
-    var r = canvas.getBoundingClientRect();
-    var dpr = Math.min(window.devicePixelRatio||1, 2);
-    canvas.width = Math.max(1, Math.round(r.width*dpr));
-    canvas.height = Math.max(1, Math.round(r.height*dpr));
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    // cover-fit the grid to the canvas
-    cellPx = Math.max(r.width/COLS, r.height/ROWS);
-    offX = (r.width - COLS*cellPx)/2;
-    offY = (r.height - ROWS*cellPx)/2;
-  }
+                  {/* Text Size */}
+                  <div>
+                    <label className="block font-semibold mb-2 text-slate-300">
+                      Typography Sizing:
+                    </label>
+                    <div className="flex items-center gap-2">
+                      {['normal', 'large', 'xlarge'].map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => {
+                            setFontSize(size);
+                            announceToScreenReader(`Font size set to ${size}`);
+                          }}
+                          className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold uppercase transition-all border ${
+                            fontSize === size
+                              ? 'bg-amber-400 text-slate-950 border-amber-300'
+                              : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                          }`}
+                        >
+                          {size === 'normal' ? 'Standard' : size === 'large' ? '115%' : '130%'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-  function draw(rx, ry){
-    var r = canvas.getBoundingClientRect();
-    ctx.clearRect(0,0,r.width,r.height);
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(gbuf, offX, offY, COLS*cellPx, ROWS*cellPx);
+                  {/* Font Type */}
+                  <div>
+                    <label className="block font-semibold mb-2 text-slate-300">
+                      Font Family Style:
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => {
+                          setFontType('sans');
+                          announceToScreenReader('Font set to Inter sans-serif');
+                        }}
+                        className={`p-2 rounded-lg text-xs font-semibold border ${
+                          fontType === 'sans'
+                            ? 'bg-indigo-600 text-white border-indigo-400'
+                            : 'bg-slate-800 border-slate-700 text-slate-300'
+                        }`}
+                      >
+                        Modern Sans
+                      </button>
+                      <button
+                        onClick={() => {
+                          setFontType('dyslexic');
+                          announceToScreenReader('Font set to Dyslexia-Friendly style');
+                        }}
+                        className={`p-2 rounded-lg text-xs font-mono border ${
+                          fontType === 'dyslexic'
+                            ? 'bg-indigo-600 text-white border-indigo-400'
+                            : 'bg-slate-800 border-slate-700 text-slate-300'
+                        }`}
+                      >
+                        Dyslexia Friendly
+                      </button>
+                    </div>
+                  </div>
 
-    // trajectory
-    if(traj.length>1){
-      ctx.beginPath();
-      ctx.moveTo(offX+traj[0][0]*cellPx, offY+traj[0][1]*cellPx);
-      for(var i=1;i<traj.length;i++)
-        ctx.lineTo(offX+traj[i][0]*cellPx, offY+traj[i][1]*cellPx);
-      ctx.strokeStyle = '#0B4FCE';
-      ctx.lineWidth = Math.max(1.6, cellPx*0.34);
-      ctx.lineJoin = ctx.lineCap = 'round';
-      ctx.stroke();
-    }
-    // current pose
-    if(rx!=null && !done){
-      ctx.beginPath();
-      ctx.arc(offX+rx*cellPx, offY+ry*cellPx, Math.max(3.2, cellPx*0.85), 0, Math.PI*2);
-      ctx.fillStyle = '#0B4FCE'; ctx.fill();
-      ctx.strokeStyle = '#EFF1EE'; ctx.lineWidth = Math.max(1.2, cellPx*0.22); ctx.stroke();
-    }
-  }
+                  {/* Motion Sensitivity Switch */}
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-800">
+                    <div>
+                      <span className="block font-semibold text-slate-200">Reduce Motion</span>
+                      <span className="text-xs text-slate-400">Pauses ambient particle canvas</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        const val = !reducedMotion;
+                        setReducedMotion(val);
+                        announceToScreenReader(val ? "Motion reduced." : "Motion enabled.");
+                      }}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        reducedMotion ? 'bg-amber-400' : 'bg-slate-700'
+                      }`}
+                      aria-label="Toggle Reduced Motion"
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-slate-950 transition-transform ${
+                          reducedMotion ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      };
 
-  function coverage(){
-    var n=0; for(var i=0;i<known.length;i++) if(known[i]!==UNKNOWN) n++;
-    return n/known.length;
-  }
+      // Header Navigation
+      const Navbar = ({ activeSection, setActiveSection }) => {
+        const navItems = [
+          { id: 'hero', label: 'Overview' },
+          { id: 'experience', label: 'Experience' },
+          { id: 'projects', label: 'Projects' },
+          { id: 'skills', label: 'Skills' },
+          { id: 'perception-lab', label: 'Perception Demo' },
+          { id: 'contact', label: 'Contact' }
+        ];
 
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        return (
+          <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-slate-950/85 border-b border-white/10 transition-colors duration-200">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+              
+              {/* Brand Logo */}
+              <a
+                href="#hero"
+                className="flex items-center gap-3 group focus:ring-2 focus:ring-amber-400 rounded-xl p-1"
+                aria-label="Nithin Kumar Aitha Portfolio Home"
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-500 flex items-center justify-center font-extrabold text-white text-xl shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform">
+                  N
+                </div>
+                <div>
+                  <span className="text-base font-bold tracking-tight text-white block leading-none">
+                    NITHIN KUMAR <span className="text-indigo-400 accent-text">AITHA</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">
+                    Robotics & Perception Engineer
+                  </span>
+                </div>
+              </a>
 
-  function step(){
-    if(seg < PATH.length-1){
-      var a = PATH[seg], b = PATH[seg+1];
-      var len = Math.hypot(b[0]-a[0], b[1]-a[1]);
-      t += 0.62/len;                       // constant ground speed
-      if(t>=1){ t=0; seg++; }
-      var rx = a[0]+(b[0]-a[0])*Math.min(t,1);
-      var ry = a[1]+(b[1]-a[1])*Math.min(t,1);
-      scan(rx, ry);
-      traj.push([rx,ry]);
-      paintBuffer();
-      draw(rx, ry);
-      frame++;
-      if(frmEl){
-        frmEl.textContent = String(frame).padStart(4,'0');
-        pctEl.textContent = Math.round(coverage()*100)+'%';
-      }
-      requestAnimationFrame(step);
-    } else {
-      done = true;
-      draw(null,null);
-      // pause on the finished map, then re-survey
-      setTimeout(function(){ reset(); requestAnimationFrame(step); }, 4200);
-    }
-  }
+              {/* Navigation Links */}
+              <nav className="hidden md:flex items-center gap-1 bg-slate-900/80 p-1.5 rounded-full border border-white/10" aria-label="Main Navigation">
+                {navItems.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    onClick={() => {
+                      setActiveSection(item.id);
+                      announceToScreenReader(`Navigated to ${item.label} section`);
+                    }}
+                    className={`px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-200 ${
+                      activeSection === item.id
+                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                    }`}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </nav>
 
-  function renderStatic(){
-    // full map, no animation
-    for(var i=0;i<PATH.length-1;i++){
-      var a=PATH[i], b=PATH[i+1], len=Math.hypot(b[0]-a[0],b[1]-a[1]);
-      for(var s=0;s<=len;s+=0.8){
-        var rx=a[0]+(b[0]-a[0])*(s/len), ry=a[1]+(b[1]-a[1])*(s/len);
-        scan(rx,ry); traj.push([rx,ry]);
-      }
-    }
-    done = true; paintBuffer(); draw(null,null);
-    if(pctEl){ pctEl.textContent = Math.round(coverage()*100)+'%'; frmEl.textContent='—'; }
-  }
+              {/* Contact Button */}
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://github.com/nithinkumaraitha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden sm:flex items-center gap-1.5 text-xs text-slate-300 hover:text-white font-mono bg-slate-900 px-3 py-2 rounded-xl border border-slate-800 hover:border-slate-700"
+                >
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                  </svg>
+                  GitHub
+                </a>
+                <a
+                  href="#contact"
+                  className="btn-primary bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs tracking-wide shadow-lg shadow-indigo-500/25 transition-all"
+                >
+                  Contact Me
+                </a>
+              </div>
+            </div>
+          </header>
+        );
+      };
 
-  reset();
-  resize();
-  window.addEventListener('resize', function(){
-    resize();
-    paintBuffer();
-    draw(null,null);
-  });
+      // Hero Section
+      const HeroSection = () => {
+        return (
+          <section id="hero" className="relative py-20 lg:py-28 overflow-hidden">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-  if(reduced){ renderStatic(); } else { requestAnimationFrame(step); }
-})();
-</script>
+                {/* Left Bio Column */}
+                <div className="lg:col-span-7 space-y-6 text-left">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-medium">
+                    <span className="text-amber-400">⚡</span> M.S. Robotics Student @ University of Delaware
+                  </div>
+
+                  <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
+                    Engineering <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent accent-text">LiDAR SLAM</span> & Multi-Sensor Perception Systems.
+                  </h1>
+
+                  <p className="text-lg text-slate-300 leading-relaxed max-w-2xl">
+                    I am a Research Assistant at CARS Lab (University of Delaware) specializing in 3D LiDAR map representations, ROS 2 control architectures, sensor fusion, and autonomous path planning for UGVs and legged robotics.
+                  </p>
+
+                  {/* Actions & Links */}
+                  <div className="flex flex-wrap items-center gap-4 pt-4">
+                    <a
+                      href="#projects"
+                      className="btn-primary bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-7 py-3.5 rounded-xl text-sm shadow-xl shadow-indigo-600/30 transition-all flex items-center gap-2"
+                    >
+                      <span>Explore Projects</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                      </svg>
+                    </a>
+
+                    <a
+                      href="https://linkedin.com/in/nithinkumaraitha"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-6 py-3.5 rounded-xl text-sm transition-all flex items-center gap-2"
+                    >
+                      <svg className="w-4 h-4 text-cyan-400 fill-current" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                      <span>LinkedIn Profile</span>
+                    </a>
+                  </div>
+
+                  {/* Highlights Grid */}
+                  <div className="pt-8 border-t border-slate-800/80 grid grid-cols-3 gap-4">
+                    <div>
+                      <div className="text-2xl sm:text-3xl font-extrabold text-white">0.05m</div>
+                      <div className="text-xs text-slate-400 font-mono mt-1">Occupancy Grid Res</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl sm:text-3xl font-extrabold text-indigo-400 accent-text">10 Hz</div>
+                      <div className="text-xs text-slate-400 font-mono mt-1">Synchronized Stack</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl sm:text-3xl font-extrabold text-cyan-400 accent-text">&lt; 0.5m</div>
+                      <div className="text-xs text-slate-400 font-mono mt-1">3D Localized GPS Error</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Hologram Card */}
+                <div className="lg:col-span-5">
+                  <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-cyan-500 to-purple-600 rounded-3xl blur-xl opacity-50 group-hover:opacity-75 transition duration-500 pointer-events-none"></div>
+
+                    <div className="relative rounded-3xl bg-slate-900/90 border border-slate-700/80 p-7 shadow-2xl backdrop-blur-xl card-el space-y-5">
+                      <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-rose-500"></div>
+                          <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                          <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                        </div>
+                        <span className="text-xs font-mono text-indigo-300">ros2_perception_stack.cpp</span>
+                      </div>
+
+                      {/* Code Visual */}
+                      <div className="p-4 rounded-xl bg-slate-950/90 border border-slate-800 font-mono text-xs text-slate-200 space-y-2 overflow-x-auto">
+                        <div className="text-slate-500">// UD CARS Lab LiDAR SLAM Config</div>
+                        <div><span className="text-purple-400">#include</span> <span className="text-emerald-400">&lt;rclcpp/rclcpp.hpp&gt;</span></div>
+                        <div><span className="text-purple-400">#include</span> <span className="text-emerald-400">&lt;fast_lio/FAST_LIO2.hpp&gt;</span></div>
+                        <br/>
+                        <div><span className="text-cyan-400">auto</span> <span className="text-amber-300">lidarPipeline</span> = std::make_shared&lt;<span className="text-indigo-300">OctoMapFilter</span>&gt;();</div>
+                        <div>lidarPipeline-&gt;<span className="text-indigo-400">setVoxelResolution</span>(<span className="text-rose-400">0.05</span>);</div>
+                        <div>lidarPipeline-&gt;<span className="text-indigo-400">enableBlindZoneMitigation</span>(<span className="text-rose-400">true</span>);</div>
+                        <div className="text-emerald-400">// Status: 10Hz Time-Synchronized Stack Ready</div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 pt-1">
+                        <div className="p-3 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-left">
+                          <span className="text-xs font-semibold text-indigo-300 block">🎓 M.S. Robotics</span>
+                          <span className="text-[11px] text-slate-400">University of Delaware</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-cyan-950/40 border border-cyan-800/40 text-left">
+                          <span className="text-xs font-semibold text-cyan-300 block">⚙️ B.E. Mechanical</span>
+                          <span className="text-[11px] text-slate-400">Osmania University</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      // Experience Section
+      const ExperienceSection = () => {
+        const experiences = [
+          {
+            role: "Research Assistant",
+            institution: "CARS Lab, University of Delaware",
+            location: "Newark, DE",
+            period: "Aug 2026 – Present",
+            highlights: [
+              "Architected 3 persistent LiDAR map representations (FAST-LIO2, OctoMap, rolling-window) using ROS 2 and C++/Python to mitigate minimum-range blind-zone collisions for legged robots.",
+              "Benchmarked representations on identical LiDAR data across simulated quadruped and wheeled robots, optimizing computation cost, memory footprint, and obstacle-retention accuracy."
+            ]
+          },
+          {
+            role: "Research Intern",
+            institution: "Osmania University",
+            location: "Hyderabad, India",
+            period: "Sep 2022 – Jun 2024",
+            highlights: [
+              "Engineered LiDAR-based perception algorithms for unstructured outdoor obstacle detection, improving navigation reliability for unmanned ground vehicles (UGVs).",
+              "Deployed a robust ROS 2 control architecture integrating multiple sensor drivers, enabling seamless transitions between autonomous and manual navigation modes.",
+              "Optimized A* global path planning and reactive obstacle avoidance algorithms within Gazebo simulation, reducing collision rates and improving route efficiency."
+            ]
+          },
+          {
+            role: "Mechanical Engineering Intern",
+            institution: "Bharat Heavy Electricals Limited (BHEL)",
+            location: "India",
+            period: "May 2021 – Sep 2021",
+            highlights: [
+              "Streamlined compressor and turbine assembly workflows across manufacturing lines, optimizing process handoffs and tooling allocation.",
+              "Validated structural integrity of 3 critical mechanical subsystems under operational loads via ANSYS FEA."
+            ]
+          }
+        ];
+
+        return (
+          <section id="experience" className="py-20 bg-slate-900/50 border-y border-white/5">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 text-left">
+              <div className="max-w-2xl mb-12">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400">Research & Industry</span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">Work & Lab Experience</h2>
+                <p className="text-slate-400 mt-2 text-sm">
+                  Research experience in robotics perception middleware, LiDAR SLAM, and mechanical validation.
+                </p>
+              </div>
+
+              <div className="space-y-8">
+                {experiences.map((exp, idx) => (
+                  <div key={idx} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 card-el transition-all hover:border-slate-700">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-800">
+                      <div>
+                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                          {exp.role} <span className="text-slate-400 font-normal">@ {exp.institution}</span>
+                        </h3>
+                        <span className="text-xs font-mono text-cyan-400 mt-1 block">{exp.location}</span>
+                      </div>
+                      <span className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-amber-300 font-mono text-xs font-semibold self-start sm:self-auto">
+                        {exp.period}
+                      </span>
+                    </div>
+
+                    <ul className="mt-4 space-y-2.5 text-sm text-slate-300 leading-relaxed">
+                      {exp.highlights.map((point, pIdx) => (
+                        <li key={pIdx} className="flex items-start gap-3">
+                          <span className="text-indigo-400 font-bold mt-0.5">•</span>
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      // Projects Showcase Section
+      const ProjectsSection = () => {
+        const [activeFilter, setActiveFilter] = useState('All');
+
+        const projects = [
+          {
+            title: "HD Map Generation and LIDAR SLAM",
+            tags: ["ROS 2", "C++", "SLAM", "RViz2", "Lanelet2"],
+            category: "Perception & SLAM",
+            description: "Engineered a ROS 2 LIDAR SLAM pipeline generating 0.05m resolution occupancy grid maps across 500m trajectories.",
+            bullets: [
+              "Corrected accumulated drift and sensor-frame misalignment across 15+ rosbag datasets using RViz2, ensuring sub-meter loop closure consistency and accurate TF2 transformations.",
+              "Constructed a Lanelet2 HD-mapping pipeline integrating GNSS trajectories and voxel-downsampled LiDAR."
+            ],
+            github: "https://github.com/nithinkumaraitha"
+          },
+          {
+            title: "Multi-Sensor 3D Object Localization",
+            tags: ["ROS 2", "YOLOv8", "Sensor Fusion", "C++", "CMake"],
+            category: "Computer Vision",
+            description: "Integrated camera, LiDAR, IMU, and GNSS into a 10 Hz time-synchronized ROS 2 perception stack.",
+            bullets: [
+              "Distributed as a production-ready colcon/CMake package.",
+              "Developed a 2D-to-3D projection matrix translating YOLOv8 bounding boxes into global GPS coordinates, achieving localization accuracy within 0.5m of GNSS ground truth."
+            ],
+            github: "https://github.com/nithinkumaraitha"
+          },
+          {
+            title: "Indoor Autonomous Delivery Robot",
+            tags: ["ROS 2", "Nav2", "slam_toolbox", "AMCL", "Gazebo"],
+            category: "Autonomous Navigation",
+            description: "Designed an autonomous mobile robot capable of multi-room navigation with 90% point-to-point delivery success rate across 30 live trials.",
+            bullets: [
+              "Tuned Navigation2 (Nav2) costmaps, A* planners, and recovery behaviors alongside slam_toolbox for continuous pose tracking."
+            ],
+            github: "https://github.com/nithinkumaraitha"
+          },
+          {
+            title: "Trajectory Planning for KUKA LBR iiwa 7 R800",
+            tags: ["Kinematics", "MATLAB", "Robotics", "Control"],
+            category: "Manipulation & Kinematics",
+            description: "Solved inverse kinematics and generated quintic joint-space trajectories for a 7-DOF manipulator.",
+            bullets: [
+              "Validated smooth motion profiles and velocity continuity under spatial joint constraints."
+            ],
+            github: "https://github.com/nithinkumaraitha"
+          }
+        ];
+
+        const filters = ['All', 'Perception & SLAM', 'Computer Vision', 'Autonomous Navigation', 'Manipulation & Kinematics'];
+
+        const filteredProjects = activeFilter === 'All'
+          ? projects
+          : projects.filter(p => p.category === activeFilter);
+
+        return (
+          <section id="projects" className="py-20">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 text-left">
+              <div className="max-w-2xl mb-8">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400">Featured Engineering</span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">Robotics & Autonomous Systems Projects</h2>
+                <p className="text-slate-400 mt-2 text-sm">
+                  Filter through full stack robotics projects covering SLAM, perception stacks, Nav2, and robotic arms.
+                </p>
+              </div>
+
+              {/* Filter Pills */}
+              <div className="flex flex-wrap gap-2 mb-10" role="tablist" aria-label="Project Filter Options">
+                {filters.map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => {
+                      setActiveFilter(filter);
+                      announceToScreenReader(`Filtering projects by ${filter}`);
+                    }}
+                    role="tab"
+                    aria-selected={activeFilter === filter}
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all border ${
+                      activeFilter === filter
+                        ? 'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-600/30'
+                        : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+
+              {/* Projects Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {filteredProjects.map((proj, idx) => (
+                  <div key={idx} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-7 card-el flex flex-col justify-between hover:border-slate-700 transition-all group">
+                    <div className="space-y-4">
+                      <div className="flex items-start justify-between gap-4">
+                        {}
+                        <a
+                          href={proj.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-xl font-bold text-white hover:text-indigo-400 transition-colors leading-snug group-hover:text-indigo-300"
+                        >
+                          <span>{proj.title}</span>
+                          <svg className="w-4 h-4 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                          </svg>
+                        </a>
+                        <a
+                          href={proj.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white shrink-0 transition-colors"
+                          aria-label={`Open GitHub repository for ${proj.title}`}
+                        >
+                          <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                          </svg>
+                        </a>
+                      </div>
+
+                      <p className="text-sm text-slate-300 leading-relaxed font-medium">
+                        {proj.description}
+                      </p>
+
+                      <ul className="space-y-1.5 text-xs text-slate-400">
+                        {proj.bullets.map((b, bIdx) => (
+                          <li key={bIdx} className="flex items-start gap-2">
+                            <span className="text-cyan-400 font-bold">›</span>
+                            <span>{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {}
+                    <div className="pt-6 mt-6 border-t border-slate-800 flex items-center justify-between gap-4 flex-wrap">
+                      <div className="flex flex-wrap gap-2">
+                        {proj.tags.map((t, tIdx) => (
+                          <span key={tIdx} className="px-2.5 py-1 rounded-md bg-indigo-950/60 border border-indigo-800/60 text-indigo-300 font-mono text-[11px]">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                      <a
+                        href={proj.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors font-mono group-hover:underline"
+                      >
+                        <span>Open Project</span>
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      // Technical Skills Section
+      const SkillsSection = () => {
+        const skillCategories = [
+          {
+            category: "Languages & Tools",
+            icon: "💻",
+            items: ["C++", "Python", "MATLAB", "Bash", "Linux (Ubuntu)", "Git", "GitHub", "CMake", "colcon", "Docker", "OOP"]
+          },
+          {
+            category: "Robotics Middleware",
+            icon: "🤖",
+            items: ["ROS", "ROS 2 (Humble)", "RViz / RViz2", "Gazebo", "Nav2", "slam_toolbox", "AMCL", "TF2", "MoveIt!", "URDF"]
+          },
+          {
+            category: "Perception & Computer Vision",
+            icon: "👁️",
+            items: ["LiDAR Processing", "OpenCV", "PCL", "Eigen", "YOLOv8", "Sensor Fusion", "OctoMap", "FAST-LIO2", "CNNs"]
+          },
+          {
+            category: "Controls & Kinematics",
+            icon: "⚙️",
+            items: ["Path & Motion Planning", "Forward / Inverse Kinematics", "Jacobians", "PID Control", "A* & Costmaps"]
+          }
+        ];
+
+        return (
+          <section id="skills" className="py-20 bg-slate-900/40 border-t border-white/5">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 text-left">
+              <div className="max-w-2xl mb-12">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400">Technical Competencies</span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">Skills & Toolkit</h2>
+                <p className="text-slate-400 mt-2 text-sm">
+                  Core domain competencies across robotics software engineering, perception, and control systems.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {skillCategories.map((cat, idx) => (
+                  <div key={idx} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-7 card-el space-y-4">
+                    <div className="flex items-center gap-3 pb-3 border-b border-slate-800">
+                      <span className="text-2xl">{cat.icon}</span>
+                      <h3 className="text-lg font-bold text-white">{cat.category}</h3>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {cat.items.map((skill, sIdx) => (
+                        <span
+                          key={sIdx}
+                          className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 text-xs font-semibold font-mono transition-colors"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      // Interactive Perception & Blind-Zone Inspector Tool
+      const PerceptionLabSection = () => {
+        const [voxelSize, setVoxelSize] = useState(0.05);
+        const [mapRepresentation, setMapRepresentation] = useState('FAST-LIO2');
+        const [blindZoneMitigation, setBlindZoneMitigation] = useState(true);
+
+        const getSimulationMetrics = () => {
+          if (mapRepresentation === 'FAST-LIO2') {
+            return { memory: "12.4 MB", latency: "8.2 ms", blindZoneCoverage: blindZoneMitigation ? "98.5%" : "72.0%", accuracy: "0.04m" };
+          } else if (mapRepresentation === 'OctoMap') {
+            return { memory: "18.1 MB", latency: "12.5 ms", blindZoneCoverage: blindZoneMitigation ? "96.0%" : "68.5%", accuracy: "0.05m" };
+          } else {
+            return { memory: "6.8 MB", latency: "4.1 ms", blindZoneCoverage: blindZoneMitigation ? "92.0%" : "61.0%", accuracy: "0.08m" };
+          }
+        };
+
+        const metrics = getSimulationMetrics();
+
+        return (
+          <section id="perception-lab" className="py-20">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 text-left">
+              <div className="bg-gradient-to-br from-indigo-950/70 via-slate-900 to-cyan-950/70 border border-indigo-500/30 rounded-3xl p-8 card-el shadow-2xl">
+                <div className="max-w-2xl mb-8">
+                  <span className="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 font-mono text-xs font-bold">
+                    CARS Lab Simulation Bench
+                  </span>
+                  <h2 className="text-3xl font-extrabold text-white mt-3">LiDAR Map Representation Inspector</h2>
+                  <p className="text-slate-300 text-sm mt-2">
+                    Simulate performance metrics across persistent LiDAR representations (FAST-LIO2, OctoMap, Rolling Window) and blind-zone mitigation toggles for legged & UGV robots.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                  
+                  {/* Controls */}
+                  <div className="lg:col-span-5 space-y-5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-300 mb-2">
+                        Select Map Representation:
+                      </label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['FAST-LIO2', 'OctoMap', 'Rolling-Window'].map((mode) => (
+                          <button
+                            key={mode}
+                            onClick={() => {
+                              setMapRepresentation(mode);
+                              announceToScreenReader(`Selected map representation ${mode}`);
+                            }}
+                            className={`py-2 px-3 rounded-xl text-xs font-mono font-bold border transition-all ${
+                              mapRepresentation === mode
+                                ? 'bg-indigo-600 text-white border-indigo-400 ring-2 ring-indigo-400/50'
+                                : 'bg-slate-950 text-slate-300 border-slate-800 hover:bg-slate-900'
+                            }`}
+                          >
+                            {mode}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-xs font-bold text-slate-300 mb-1.5">
+                        <span>Voxel Downsample Grid Size:</span>
+                        <span className="font-mono text-cyan-400">{voxelSize}m</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0.02"
+                        max="0.20"
+                        step="0.01"
+                        value={voxelSize}
+                        onChange={(e) => setVoxelSize(parseFloat(e.target.value))}
+                        className="w-full accent-indigo-500 cursor-pointer"
+                        aria-label="Voxel Downsample Resolution"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-800">
+                      <div>
+                        <span className="block font-semibold text-xs text-slate-200">Blind-Zone Mitigation</span>
+                        <span className="text-[11px] text-slate-400">Min-range collision prevention</span>
+                      </div>
+                      <button
+                        onClick={() => setBlindZoneMitigation(!blindZoneMitigation)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          blindZoneMitigation ? 'bg-emerald-500' : 'bg-slate-700'
+                        }`}
+                        aria-label="Toggle Blind-Zone Mitigation"
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-slate-950 transition-transform ${
+                            blindZoneMitigation ? 'translate-x-6' : 'translate-x-1'
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Benchmark Outputs */}
+                  <div className="lg:col-span-7">
+                    <div className="p-6 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-4">
+                      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <span className="text-xs font-mono text-indigo-400 font-bold uppercase">Pipeline Benchmark Telemetry</span>
+                        <span className="text-xs font-mono text-emerald-400">● Live Simulated</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 text-xs font-mono">
+                        <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                          <span className="text-slate-400 block mb-1">RAM Footprint:</span>
+                          <span className="text-base font-bold text-white">{metrics.memory}</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                          <span className="text-slate-400 block mb-1">Point Processing Time:</span>
+                          <span className="text-base font-bold text-cyan-400">{metrics.latency}</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                          <span className="text-slate-400 block mb-1">Obstacle Retention Accuracy:</span>
+                          <span className="text-base font-bold text-indigo-400">{metrics.accuracy}</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                          <span className="text-slate-400 block mb-1">Blind-Zone Protection:</span>
+                          <span className={`text-base font-bold ${blindZoneMitigation ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {metrics.blindZoneCoverage}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      // Contact Form Section
+      const ContactSection = () => {
+        const [formState, setFormState] = useState({ name: '', email: '', message: '' });
+        const [submitted, setSubmitted] = useState(false);
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          if (!formState.name || !formState.email || !formState.message) return;
+          setSubmitted(true);
+          announceToScreenReader("Thank you! Your message has been sent successfully.");
+        };
+
+        return (
+          <section id="contact" className="py-20 bg-slate-900/60 border-t border-white/5">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 text-left">
+              <div className="text-center max-w-xl mx-auto mb-12">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400">Get In Touch</span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">Connect with Nithin</h2>
+                <p className="text-slate-400 text-sm mt-2">
+                  Interested in robotics research, perception roles, or project collaborations? Send a message below or email directly.
+                </p>
+              </div>
+
+              {submitted ? (
+                <div
+                  className="bg-emerald-950/60 border border-emerald-500/50 rounded-2xl p-8 text-center space-y-3 card-el"
+                  role="alert"
+                >
+                  <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+                    ✓
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Message Dispatched!</h3>
+                  <p className="text-sm text-emerald-200">
+                    Thank you for reaching out. I will get back to you shortly at {formState.email}.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSubmitted(false);
+                      setFormState({ name: '', email: '', message: '' });
+                    }}
+                    className="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold"
+                  >
+                    Send Another Note
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-5 card-el shadow-xl">
+                  
+                  {/* Quick Info Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-slate-800 text-xs">
+                    <div className="flex items-center gap-2 text-slate-300">
+                      <span className="text-indigo-400">📧</span>
+                      <span>nithinkumar.aitha@gmail.com</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-300">
+                      <span className="text-cyan-400">📍</span>
+                      <span>Newark, DE | (302) 332-7277</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label htmlFor="user-name" className="block text-xs font-bold text-slate-300 mb-1.5">
+                        Your Full Name <span className="text-pink-400">*</span>
+                      </label>
+                      <input
+                        id="user-name"
+                        type="text"
+                        required
+                        placeholder="Dr. Alex Vance"
+                        value={formState.name}
+                        onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="user-email" className="block text-xs font-bold text-slate-300 mb-1.5">
+                        Email Address <span className="text-pink-400">*</span>
+                      </label>
+                      <input
+                        id="user-email"
+                        type="email"
+                        required
+                        placeholder="alex@domain.com"
+                        value={formState.email}
+                        onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="user-message" className="block text-xs font-bold text-slate-300 mb-1.5">
+                      Message <span className="text-pink-400">*</span>
+                    </label>
+                    <textarea
+                      id="user-message"
+                      rows="4"
+                      required
+                      placeholder="Share your inquiry, robotics role opportunity, or collaboration idea..."
+                      value={formState.message}
+                      onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                    ></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn-primary w-full bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-3.5 rounded-xl text-sm shadow-xl shadow-indigo-500/20 transition-all"
+                  >
+                    Submit Message
+                  </button>
+                </form>
+              )}
+            </div>
+          </section>
+        );
+      };
+
+      // Footer
+      const Footer = () => {
+        return (
+          <footer className="py-12 bg-slate-950 border-t border-slate-800 text-left text-slate-400 text-xs">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+              
+              <div>
+                <span className="text-white font-bold tracking-tight text-sm block">
+                  NITHIN KUMAR AITHA — PORTFOLIO
+                </span>
+                <span className="text-slate-500 mt-1 block">
+                  M.S. Robotics @ University of Delaware | LiDAR SLAM & Perception
+                </span>
+              </div>
+
+              <div className="flex items-center gap-6 text-slate-300 font-semibold font-mono">
+                <a href="https://github.com/nithinkumaraitha" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400">GitHub</a>
+                <a href="https://linkedin.com/in/nithinkumaraitha" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400">LinkedIn</a>
+                <a href="#hero" className="hover:text-indigo-400">Top ↑</a>
+              </div>
+
+            </div>
+          </footer>
+        );
+      };
+
+      // App Root
+      const App = () => {
+        const [activeSection, setActiveSection] = useState('hero');
+        const [theme, setTheme] = useState('stellar');
+        const [fontSize, setFontSize] = useState('normal');
+        const [fontType, setFontType] = useState('sans');
+        const [reducedMotion, setReducedMotion] = useState(false);
+        const [isA11yOpen, setIsA11yOpen] = useState(false);
+
+        const themeClass = useMemo(() => {
+          if (theme === 'light') return 'bg-slate-100 text-slate-900';
+          if (theme === 'hc-dark') return 'theme-high-contrast-dark';
+          if (theme === 'hc-light') return 'theme-high-contrast-light';
+          return 'bg-stellar-bg text-slate-100';
+        }, [theme]);
+
+        const fontSizeClass = useMemo(() => {
+          if (fontSize === 'large') return 'text-[115%]';
+          if (fontSize === 'xlarge') return 'text-[130%]';
+          return 'text-[100%]';
+        }, [fontSize]);
+
+        const fontTypeClass = useMemo(() => {
+          return fontType === 'dyslexic' ? 'font-dyslexic' : '';
+        }, [fontType]);
+
+        useEffect(() => {
+          const handleKeyDown = (e) => {
+            if (e.altKey && (e.key === 'a' || e.key === 'A')) {
+              e.preventDefault();
+              setIsA11yOpen(prev => !prev);
+            }
+          };
+          window.addEventListener('keydown', handleKeyDown);
+          return () => window.removeEventListener('keydown', handleKeyDown);
+        }, []);
+
+        return (
+          <div className={`min-h-screen ${themeClass} ${fontSizeClass} ${fontTypeClass} transition-colors duration-200 relative`}>
+            
+            <StellarCanvas
+              isPaused={reducedMotion}
+              isHighContrast={theme === 'hc-dark' || theme === 'hc-light'}
+            />
+
+            <AccessibilityControlPanel
+              theme={theme}
+              setTheme={setTheme}
+              fontSize={fontSize}
+              setFontSize={setFontSize}
+              fontType={fontType}
+              setFontType={setFontType}
+              reducedMotion={reducedMotion}
+              setReducedMotion={setReducedMotion}
+              isOpen={isA11yOpen}
+              setIsOpen={setIsA11yOpen}
+            />
+
+            <Navbar
+              activeSection={activeSection}
+              setActiveSection={setActiveSection}
+            />
+
+            <main id="main-content" className="relative z-10">
+              <HeroSection />
+              <ExperienceSection />
+              <ProjectsSection />
+              <SkillsSection />
+              <PerceptionLabSection />
+              <ContactSection />
+            </main>
+
+            <Footer />
+
+          </div>
+        );
+      };
+
+      const rootElement = document.getElementById('root');
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(<App />);
+    </script>
 </body>
 </html>
